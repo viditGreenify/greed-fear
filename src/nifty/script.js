@@ -34,11 +34,26 @@ const COLOR = {
   bgWhite: '\x1b[47m',
 };
 
-const sortDataForRelevantExpiryDate = (data, expiryDate) => {
+function roundToNearest(num) {
+  // Round to the nearest 50
+  var roundedNum = Math.round(num / 50) * 50;
+
+  // If the rounded number is more than 50 away from the original, round to the nearest 100 instead
+  if (Math.abs(roundedNum - num) >= 50) {
+    roundedNum = Math.round(num / 100) * 100;
+  }
+  console.log(roundedNum);
+  return roundedNum;
+}
+
+const sortDataForRelevantExpiryDate = (data, expiryDate, currentStrikePrice) => {
   try {
+    minStrikePrice = currentStrikePrice - 650;
+    maxStrikePrice = currentStrikePrice + 650;
     const sortedArray = [];
     data.forEach((object) => {
-      if (object.expiryDate === expiryDate) {
+      //console.log(object.strikePrice);
+      if (object.expiryDate === expiryDate && object.strikePrice >= minStrikePrice && object.strikePrice <= maxStrikePrice) {
         /** Call and Put both objects are required */
         if (object.CE && object.PE) {
           sortedArray.push(object);
@@ -83,7 +98,9 @@ const calculations = (dataArray, type) => {
 
 const runScript = async () => {
   try {
-    const { expiryDates = false, data, strikePrices } = await getDataFromNSE(dataURL);
+    console.log('Running script');
+    const { expiryDates = false, data, strikePrices, underlyingValue: currentStrikePrice } = await getDataFromNSE(dataURL);
+    console.log('data fetched', expiryDates);
     if (!expiryDates) return;
     /** sort data for relevant expiry date, 0th element */
 
@@ -94,11 +111,13 @@ const runScript = async () => {
     } else {
       today = 1;
     }
+    today = 2;
     for (let index = 0; index < today; ++index) {
       // eslint-disable-next-line no-await-in-loop
       const completeDataForExpiryDate = sortDataForRelevantExpiryDate(
         data,
-        expiryDates[index] // expiry date variable
+        expiryDates[index],
+        roundToNearest(currentStrikePrice) // expiry date variable
       );
       console.log(
         `${COLOR.fgYellow} NIFTY Total data found is : ${
@@ -171,11 +190,16 @@ const runScript = async () => {
         callTotalTradedVolume,
         putTotalTradedVolume,
       });
-      oiObj.save();
+      //oiObj.save();
+      if (index === 0) global.io.emit('data', oiObj);
     }
+    console.log(roundToNearest(currentStrikePrice));
   } catch (error) {
     console.error(error);
   }
 };
+// setInterval(() => {
+//   runScript();
+// }, 60 * 1000);
 
 module.exports = { runScript };

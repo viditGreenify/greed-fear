@@ -47,8 +47,8 @@ const config = require('./config/config');
 const logger = require('./config/logger');
 
 // let server;
-mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
-  logger.info('Connected to MongoDB');
+// mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
+//   logger.info('Connected to MongoDB');
 
   app.set('port', config.port);
   server.listen(config.port, () => {
@@ -82,14 +82,16 @@ mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
       return next(err);
     }
   }).on('connection', (socket) => {
-    // console.log('connection', socket.user._id);
+     //console.log('connection', socket.user._id);
 
     // socket.join(socket.user._id);
-    // const socketKey = `${socket.user._id}}`;
+     //const socketKey = `${socket.user._id}}`;
 
-    // connectedClients.set(socketKey, socket.id);
+     //connectedClients.set(socketKey, socket.id);
 
-    logger.info(`Client connected. User ID: ${socket}}`);
+    logger.info(`Client connected.`);
+
+    //console.log(socket);
 
     socket.on('disconnect', (dis) => {
       // connectedClients.delete(socketKey);
@@ -100,7 +102,7 @@ mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
 
   global.io = io;
   global.connectedClients = connectedClients;
-});
+// });
 
 const exitHandler = () => {
   if (server) {

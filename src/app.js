@@ -50,11 +50,12 @@ app.options('*', cors());
 //   app.use('/v1/auth', authLimiter);
 // }
 
+app.use('/v1', routes);
 app.use('/', (req, res, next) => {
   res.send(`Greed N Fear rules! ${global.isNiftyJobRunning}`);
 });
 // v1 api routes
-app.use('/v1', routes);
+
 // For Testing
 require('./controllers/niftyOI.controller');
 

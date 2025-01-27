@@ -8,14 +8,19 @@ global.isNiftyJobRunning = false;
 const niftyJob = cron.schedule(
   '* * * * *',
   () => {
-    logger.info('Running a job at every minute');
-    global.isNiftyJobRunning = true;
-    runScript();
+    
+      logger.info('Running a job at every minute');
+      global.isNiftyJobRunning = true;
+      runScript();
+    
+    
   },
   {
     scheduled: false,
   }
 );
+
+// niftyJob.start();  
 
 cron.schedule(
   '5 9 * * 1-5',
@@ -46,6 +51,11 @@ setInterval(() => {
   const currentTime = new Date();
 
   const desiredStartTime = new Date();
+
+  const currentDay = currentTime.getDay();
+  
+  if(!currentDay || currentDay > 5) return;
+  
   desiredStartTime.setHours(9, 5, 0, 0); // Set desired time to 9:05 AM
 
   const desiredEndTime = new Date();

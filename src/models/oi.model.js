@@ -18,9 +18,9 @@ const oiSchema = mongoose.Schema(
     timestamps: true,
   }
 );
-
+oiSchema.index({ createdAt: 1 }, { expireAfterSeconds: 7 * 24 * 60 * 60 });
 // add plugin that converts mongoose to json
-oiSchema.plugin(toJSON);
+//oiSchema.plugin(toJSON);
 
 /**
  * @typedef OIData
