@@ -282,3 +282,5 @@ const runStockScript = async () => {
 setInterval(() => {
   runStockScript();
 }, 60 * 1000);
+
+module.exports = { runStockScript };

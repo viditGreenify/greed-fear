@@ -1,6 +1,7 @@
 const cron = require('node-cron');
 const logger = require('../config/logger');
 const { runScript } = require('../nifty/script');
+const { runStockScript } = require('../nifty/stockScript');
 
 logger.info('reached niftyOI Controller');
 global.isNiftyJobRunning = false;
@@ -8,19 +9,17 @@ global.isNiftyJobRunning = false;
 const niftyJob = cron.schedule(
   '* * * * *',
   () => {
-    
-      logger.info('Running a job at every minute');
-      global.isNiftyJobRunning = true;
-      runScript();
-    
-    
+    logger.info('Running a job at every minute');
+    global.isNiftyJobRunning = true;
+    runScript();
+    runStockScript();
   },
   {
     scheduled: false,
   }
 );
 
-// niftyJob.start();  
+// niftyJob.start();
 
 cron.schedule(
   '5 9 * * 1-5',
@@ -53,9 +52,9 @@ setInterval(() => {
   const desiredStartTime = new Date();
 
   const currentDay = currentTime.getDay();
-  
-  if(!currentDay || currentDay > 5) return;
-  
+
+  if (!currentDay || currentDay > 5) return;
+
   desiredStartTime.setHours(9, 5, 0, 0); // Set desired time to 9:05 AM
 
   const desiredEndTime = new Date();
