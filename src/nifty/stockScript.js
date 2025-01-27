@@ -270,7 +270,7 @@ const runStockScript = async () => {
           putTotalTradedVolume,
         });
         //oiObj.save();
-        //if (index === 0) global.io.emit('data', oiObj);
+        if (index === 0) global.io.emit('data', oiObj);
       }
       console.log(roundToNearest(currentStrikePrice));
     } catch (error) {
@@ -279,8 +279,8 @@ const runStockScript = async () => {
   }
 };
 
-setInterval(() => {
-  runStockScript();
-}, 60 * 1000);
+// setInterval(() => {
+//   runStockScript();
+// }, 60 * 1000);
 
 module.exports = { runStockScript };
